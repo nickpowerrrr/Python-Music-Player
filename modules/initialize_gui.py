@@ -11,6 +11,6 @@ def initialize_gui():
     # Interactions
     # --Control button
     self.canvas.tag_bind(self.control_button.button, "<Button-1>", lambda event: control_player(self))
-    self.canvas.bind("<Motion>", self.track_motion)
+    self.canvas.bind("<Motion>", lambda event: self.track_motion(event))
     
     return self

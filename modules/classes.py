@@ -1,10 +1,10 @@
 import os
 import sys
 import tkinter as tk
-import numpy as np
-import math
 
-from PIL import Image, ImageTk
+import numpy as np
+from PIL import Image, ImageFile, ImageTk
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from lerp import lerp
 
@@ -51,9 +51,9 @@ class MainGui:
         )
         self.pause_image = self.pause_image_file.resize(CONTROL_BUTTON_SIZE)
         self.pause_image = ImageTk.PhotoImage(self.pause_image, master=self.root)
-        self.control_button = ImageButton(self, self.play_image,self.play_image_file)
+        self.control_button = ImageButton(self, self.play_image, self.play_image_file)
 
-    def track_motion(self, event):
+    def track_motion(self, event :tk.Event):
         x, y = event.x, event.y
         self.mouse_position_x: int = x
         self.mouse_position_y: int = y
@@ -62,19 +62,21 @@ class MainGui:
 class ImageButton:
     """Creates an image button with hover functions"""
 
-    def __init__(self, main_gui: MainGui, selected_image: ImageTk.PhotoImage, selected_image_file):
+    def __init__(
+        self, main_gui: MainGui, selected_image: ImageTk.PhotoImage, selected_image_file :ImageFile.ImageFile
+    ):
         self.position_x = GUI_WIDTH / 2
         self.position_y = GUI_HEIGHT / 2
         self.min_position_x = self.position_x - 50  # 50% of size.
         self.max_position_x = self.position_x + 50
         self.min_position_y = self.position_y - 50
         self.max_position_y = self.position_y + 50
-        self.button: int = main_gui.canvas.create_image(
+        self.button: int = main_gui.canvas.create_image( # type: ignore
             self.position_x, self.position_y, image=selected_image
         )
         self.selected_image_file = selected_image_file
         self.current_size = 100
-        
+
         self.update(main_gui)
 
     def update(self, main_gui: MainGui):
@@ -92,32 +94,26 @@ class ImageButton:
             self.on_leave(main_gui)
         main_gui.root.after(16, lambda: self.update(main_gui))
 
-    def scale_button(self, main_gui :MainGui, target_size :int):
-    
-    
-       speed = 10.0
-       alpha = np.clip(main_gui.delta_time * speed, 0.0, 1.0)  or min(main_gui.delta_time * speed, 1.0)
-     
-   
-       self.current_size = lerp(self.current_size, target_size, alpha)
-    
-  
-       int_size = int(round(self.current_size))
-    
-  
-       resized_file = self.selected_image_file.resize(
-         (int_size, int_size), 
-         Image.Resampling.LANCZOS
-     )  
-    
-       self.selected_image = ImageTk.PhotoImage(resized_file, master=main_gui.root)
-       main_gui.canvas.itemconfig(self.button, image=self.selected_image)
-    
-       print(self.current_size)        
+    def scale_button(self, main_gui: MainGui, target_size: int):
+
+        speed = 10.0
+        alpha = np.clip(main_gui.delta_time * speed, 0.0, 1.0) or min(
+            main_gui.delta_time * speed, 1.0
+        )
+
+        self.current_size = lerp(self.current_size, target_size, alpha)
+
+        int_size = round(self.current_size)
+
+        resized_file = self.selected_image_file.resize(
+            (int_size, int_size), Image.Resampling.LANCZOS
+        )
+
+        self.selected_image = ImageTk.PhotoImage(resized_file, master=main_gui.root)
+        main_gui.canvas.itemconfig(self.button, image=self.selected_image)
 
     def on_enter(self, main_gui: MainGui):
-       self.scale_button(main_gui,125)
-       
+        self.scale_button(main_gui, 125)
 
-    def on_leave(self, main_gui :MainGui):
-       self.scale_button(main_gui,100)
+    def on_leave(self, main_gui: MainGui):
+        self.scale_button(main_gui, 100)
