@@ -1,32 +1,16 @@
-import tkinter as tk
-from get_asset_path import get_asset_path
+import os
+import sys
 
-# Images
-
-
-class MainGui:
-    def __init__(self):
-        # Gui Initilization
-        self.root = tk.Tk()
-        self.root.title("Python-Music-Player v.0.0.1")
-        self.root.geometry("750x500")  # Window size
-        self.root.resizable(False, False)
-
-        # Canvas
-        self.canvas: tk.Canvas = tk.Canvas(
-            self.root, width=750, height=500, highlightthickness=0
-        )
-        # Images
-        self.play_image = tk.PhotoImage(
-            file=get_asset_path("assets\\images\\play_button.png")
-        )
-        self.control_button: int = self.canvas.create_image(590, 300, self.play_image)
-        # Gui Variablies
-        self.playing = False
-        # Start Loop
-        self.root.mainloop()
-        self.canvas.update()
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from classes import *
+from player_controller import *
 
 
 def initialize_gui():
+    self = MainGui()
+    # Interactions
+    # --Control button
+    self.canvas.tag_bind(self.control_button, "<Button-1>", lambda event: control_player(self))
+    
+    
     return MainGui()
