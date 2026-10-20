@@ -2,6 +2,7 @@ import os
 import sys
 import tkinter as tk
 import numpy as np
+import math
 
 from PIL import Image, ImageTk
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -91,20 +92,32 @@ class ImageButton:
             self.on_leave(main_gui)
         main_gui.root.after(16, lambda: self.update(main_gui))
 
-    def on_enter(self, main_gui :MainGui):
-        target_size = 200
-        speed = main_gui.delta_time * 100
-        current_size = lerp(self.current_size,target_size,speed)
-        # self.selected_image_file = self.selected_image_file.resize(current_size,current_size)
-        # main_gui.canvas.itemconfig(main_gui.control_button.button, image=self.selected_image_file)
-        self.current_size = current_size
-        print(self.current_size)
+    def scale_button(self, main_gui :MainGui, target_size :int):
+    
+    
+       speed = 10.0
+       alpha = np.clip(main_gui.delta_time * speed, 0.0, 1.0)  or min(main_gui.delta_time * speed, 1.0)
+     
+   
+       self.current_size = lerp(self.current_size, target_size, alpha)
+    
+  
+       int_size = int(round(self.current_size))
+    
+  
+       resized_file = self.selected_image_file.resize(
+         (int_size, int_size), 
+         Image.Resampling.LANCZOS
+     )  
+    
+       self.selected_image = ImageTk.PhotoImage(resized_file, master=main_gui.root)
+       main_gui.canvas.itemconfig(self.button, image=self.selected_image)
+    
+       print(self.current_size)        
+
+    def on_enter(self, main_gui: MainGui):
+       self.scale_button(main_gui,125)
+       
 
     def on_leave(self, main_gui :MainGui):
-        target_size = 100
-        speed = main_gui.delta_time * 100
-        current_size = lerp(self.current_size,target_size,speed)
-        # self.selected_image_file = self.selected_image_file.resize(current_size,current_size)
-        main_gui.canvas.itemconfig(main_gui.control_button.button, image=self.selected_image_file)
-        self.current_size = current_size
-        print(self.current_size)
+       self.scale_button(main_gui,100)
