@@ -8,7 +8,8 @@ from classes import MainGui
 def start_player(self: MainGui):
     print("starting player!")
     self.playing = True
-    self.canvas.itemconfig(self.control_button, image=self.pause_image)
+    self.canvas.itemconfig(self.control_button.button, image=self.pause_image)
+    print(self.delta_time)
 
 
 def reset_player(self: MainGui):
@@ -18,7 +19,7 @@ def reset_player(self: MainGui):
 def pause_player(self: MainGui):
     print("pausing player!")
     self.playing = False
-    self.canvas.itemconfig(self.control_button, image=self.play_image)
+    self.canvas.itemconfig(self.control_button.button, image=self.play_image)
 
 
 def control_player(self: MainGui):
