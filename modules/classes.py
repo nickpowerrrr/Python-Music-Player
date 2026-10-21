@@ -10,6 +10,7 @@ from lerp import lerp
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # ADD LOCAL IMPORTS AFTER THIS
+from audioplayer import AudioPlayer
 from get_asset_path import get_asset_path
 
 # CONSTANTS
@@ -52,8 +53,10 @@ class MainGui:
         self.pause_image = self.pause_image_file.resize(CONTROL_BUTTON_SIZE)
         self.pause_image = ImageTk.PhotoImage(self.pause_image, master=self.root)
         self.control_button = ImageButton(self, self.play_image, self.play_image_file)
+        # Audio Player
+        self.audio_player = AudioPlayer()
 
-    def track_motion(self, event :tk.Event):
+    def track_motion(self, event: tk.Event):
         x, y = event.x, event.y
         self.mouse_position_x: int = x
         self.mouse_position_y: int = y
@@ -63,7 +66,10 @@ class ImageButton:
     """Creates an image button with hover functions"""
 
     def __init__(
-        self, main_gui: MainGui, selected_image: ImageTk.PhotoImage, selected_image_file :ImageFile.ImageFile
+        self,
+        main_gui: MainGui,
+        selected_image: ImageTk.PhotoImage,
+        selected_image_file: ImageFile.ImageFile,
     ):
         self.position_x = GUI_WIDTH / 2
         self.position_y = GUI_HEIGHT / 2
@@ -71,7 +77,7 @@ class ImageButton:
         self.max_position_x = self.position_x + 50
         self.min_position_y = self.position_y - 50
         self.max_position_y = self.position_y + 50
-        self.button: int = main_gui.canvas.create_image( # type: ignore
+        self.button: int = main_gui.canvas.create_image(  # type: ignore
             self.position_x, self.position_y, image=selected_image
         )
         self.selected_image_file = selected_image_file
@@ -117,3 +123,7 @@ class ImageButton:
 
     def on_leave(self, main_gui: MainGui):
         self.scale_button(main_gui, 100)
+        
+class Song:
+    def __init__(self, song_path) -> None:
+        self.song_path = song_path
