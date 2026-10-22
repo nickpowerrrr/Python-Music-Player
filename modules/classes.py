@@ -1,7 +1,7 @@
 import os
 import sys
 import tkinter as tk
-from typing import TypedDict, NotRequired
+from typing import TypedDict
 
 import numpy as np
 from PIL import Image, ImageFile, ImageTk
@@ -126,7 +126,9 @@ class ImageButton:
         self.scale_button(main_gui, 100)
 
 
-class SongData(TypedDict):
-    name: str
+class SongInfo(TypedDict):
     song_file_path: str
-    song_icon_path: NotRequired[str]
+    song_icon_path: str
+SongData = dict[str, SongInfo]
+    
+    
