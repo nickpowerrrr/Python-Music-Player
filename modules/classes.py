@@ -1,6 +1,7 @@
 import os
 import sys
 import tkinter as tk
+from typing import TypedDict, NotRequired
 
 import numpy as np
 from PIL import Image, ImageFile, ImageTk
@@ -72,7 +73,7 @@ class ImageButton:
         selected_image_file: ImageFile.ImageFile,
     ):
         self.position_x = GUI_WIDTH / 2
-        self.position_y = GUI_HEIGHT / 2
+        self.position_y = (GUI_HEIGHT / 2) + 100
         self.min_position_x = self.position_x - 50  # 50% of size.
         self.max_position_x = self.position_x + 50
         self.min_position_y = self.position_y - 50
@@ -123,7 +124,9 @@ class ImageButton:
 
     def on_leave(self, main_gui: MainGui):
         self.scale_button(main_gui, 100)
-        
-class Song:
-    def __init__(self, song_path) -> None:
-        self.song_path = song_path
+
+
+class SongData(TypedDict):
+    name: str
+    song_file_path: str
+    song_icon_path: NotRequired[str]
