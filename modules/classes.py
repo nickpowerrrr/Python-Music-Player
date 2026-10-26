@@ -44,18 +44,20 @@ class MainGui:
 
         # --Control button
         self.play_image_file = Image.open(
-            get_asset_path("assets\\images\\play_button.png")
+            get_asset_path("assets/images/play_button.png")
         )
         self.play_image = self.play_image_file.resize(CONTROL_BUTTON_SIZE)
         self.play_image = ImageTk.PhotoImage(self.play_image, master=self.root)
         self.pause_image_file = Image.open(
-            get_asset_path("assets\\images\\pauze_button.png")
+            get_asset_path("assets/images/pauze_button.png")
         )
         self.pause_image = self.pause_image_file.resize(CONTROL_BUTTON_SIZE)
         self.pause_image = ImageTk.PhotoImage(self.pause_image, master=self.root)
         self.control_button = ImageButton(self, self.play_image, self.play_image_file)
         # Audio Player
         self.audio_player = AudioPlayer()
+        # Data
+        self.current_song: SongInfo | None = None
 
     def track_motion(self, event: tk.Event):
         x, y = event.x, event.y
@@ -126,9 +128,10 @@ class ImageButton:
         self.scale_button(main_gui, 100)
 
 
-class SongInfo(TypedDict):
+class SongDetails(TypedDict):
     song_file_path: str
     song_icon_path: str
-SongData = dict[str, SongInfo]
-    
-    
+
+SongInfo = dict[str, SongDetails]
+       
+   

@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from classes import *
-from create_song_data import create_song_data
+from song_data_handler import *
 from player_controller import *
 
 
@@ -17,5 +17,7 @@ def initialize_gui():
     )
     self.canvas.bind("<Motion>", lambda event: self.track_motion(event))
     create_song_data("I miss the quiet")
+    current_song = get_song_data("I miss the quiet")
+    self.current_song = current_song
 
     return self

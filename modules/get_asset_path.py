@@ -3,8 +3,8 @@ from pathlib import Path
 
 
 def get_asset_path(relative_path: str) -> str:
-    r"""Get absolute path to file, works for dev and for PyInstaller,
-    Example = 'images\\player\\default_icon.png'(two backslashes)
+    r"""Get absolute path to file
+    Example = 'images/player/default_icon.png'
 
     """
 
