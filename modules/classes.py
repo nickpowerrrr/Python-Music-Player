@@ -19,6 +19,7 @@ GUI_WIDTH = 750
 GUI_HEIGHT = 500
 
 CONTROL_BUTTON_SIZE = (100, 100)
+SKIP_BUTTON_OFFSET = 150
 
 
 class MainGui:
@@ -41,19 +42,40 @@ class MainGui:
         self.mouse_position_x = 0
         self.mouse_position_y = 0
         # Images
+        
+        # Ui Handler Variables
+        self.current_buttons :list[ImageButton] = []
 
         # --Control button
+        
         self.play_image_file = Image.open(
             get_asset_path("assets/images/play_button.png")
         )
         self.play_image = self.play_image_file.resize(CONTROL_BUTTON_SIZE)
         self.play_image = ImageTk.PhotoImage(self.play_image, master=self.root)
+        
         self.pause_image_file = Image.open(
             get_asset_path("assets/images/pauze_button.png")
         )
         self.pause_image = self.pause_image_file.resize(CONTROL_BUTTON_SIZE)
         self.pause_image = ImageTk.PhotoImage(self.pause_image, master=self.root)
-        self.control_button = ImageButton(self, self.play_image, self.play_image_file)
+        self.control_button = ImageButton(self, self.play_image, self.play_image_file, GUI_WIDTH / 2, GUI_HEIGHT / 2 + 100)
+        self.current_buttons.append(self.control_button)
+        self.skip_left_image_file = Image.open(
+            get_asset_path("assets/images/skip_left.png")
+        )
+        self.skip_left_image = self.skip_left_image_file.resize(CONTROL_BUTTON_SIZE)
+        self.skip_left_image = ImageTk.PhotoImage(self.skip_left_image, master=self.root)
+        self.skip_left_button = ImageButton(self,self.skip_left_image,self.skip_left_image_file, self.control_button.position_x - SKIP_BUTTON_OFFSET,GUI_HEIGHT / 2 + 100)
+        self.current_buttons.append(self.skip_left_button)
+        self.skip_right_image_file = Image.open(
+                    get_asset_path("assets/images/skip_right.png")
+                )
+        self.skip_right_image = self.skip_right_image_file.resize(CONTROL_BUTTON_SIZE)
+        self.skip_right_image = ImageTk.PhotoImage(self.skip_right_image, master=self.root)
+        self.skip_right_button = ImageButton(self,self.skip_right_image,self.skip_right_image_file, self.control_button.position_x + SKIP_BUTTON_OFFSET,GUI_HEIGHT / 2 + 100)
+        self.current_buttons.append(self.skip_right_button)
+        
         # Audio Player
         self.audio_player = AudioPlayer()
         # Data
@@ -73,9 +95,11 @@ class ImageButton:
         main_gui: MainGui,
         selected_image: ImageTk.PhotoImage,
         selected_image_file: ImageFile.ImageFile,
+        position_x :float,
+        position_y :float
     ):
-        self.position_x = GUI_WIDTH / 2
-        self.position_y = (GUI_HEIGHT / 2) + 100
+        self.position_x = position_x
+        self.position_y = position_y
         self.min_position_x = self.position_x - 50  # 50% of size.
         self.max_position_x = self.position_x + 50
         self.min_position_y = self.position_y - 50
@@ -85,8 +109,6 @@ class ImageButton:
         )
         self.selected_image_file = selected_image_file
         self.current_size = 100
-
-        self.update(main_gui)
 
     def update(self, main_gui: MainGui):
 
@@ -99,9 +121,8 @@ class ImageButton:
         is_in_range = is_in_x_range and is_in_y_range
         if is_in_range:
             self.on_enter(main_gui)
-        else:
+        elif self.current_size != 100:
             self.on_leave(main_gui)
-        main_gui.root.after(16, lambda: self.update(main_gui))
 
     def scale_button(self, main_gui: MainGui, target_size: int):
 
@@ -115,7 +136,7 @@ class ImageButton:
         int_size = round(self.current_size)
 
         resized_file = self.selected_image_file.resize(
-            (int_size, int_size), Image.Resampling.LANCZOS
+            (int_size, int_size),
         )
 
         self.selected_image = ImageTk.PhotoImage(resized_file, master=main_gui.root)

@@ -2,6 +2,7 @@ import time
 
 from modules.classes import *
 from modules.initialize_gui import initialize_gui
+from modules.ui_handler import update_ui
 
 MAIN_GUI = initialize_gui()
 
@@ -18,6 +19,7 @@ def update():
     last_frame_time = current_time
 
     MAIN_GUI.delta_time = delta_time
+    update_ui(MAIN_GUI)
     MAIN_GUI.root.after(16, update)  # 60 fps
 
 update()
