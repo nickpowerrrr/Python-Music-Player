@@ -23,6 +23,7 @@ def start_player(self: MainGui):
 
 def reset_player(self: MainGui):
     print("resetting player!")  # THIS WILL RESET THE SONG!
+    self.audio_player.reset_audio()
 
 
 def pause_player(self: MainGui):

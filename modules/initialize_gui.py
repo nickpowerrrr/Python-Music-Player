@@ -15,6 +15,15 @@ def initialize_gui():
     self.canvas.tag_bind(
         self.control_button.button, "<Button-1>", lambda event: control_player(self)
     )
+    # Skip Buttons
+    self.canvas.tag_bind(
+        self.skip_left_button.button, "<Button-1>", lambda event: reset_player(self)
+    )
+    self.canvas.tag_bind(
+        self.skip_right_button.button, "<Button-1>", lambda event: reset_player(self)
+    )
+
+    # ---
     self.canvas.bind("<Motion>", lambda event: self.track_motion(event))
     create_song_data("I miss the quiet")
     current_song = get_song_data("I miss the quiet")

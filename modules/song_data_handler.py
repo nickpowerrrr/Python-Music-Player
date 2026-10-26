@@ -9,8 +9,8 @@ DATA_FOLDER = get_asset_path("assets/data")
 MUSIC_FOLDER = get_asset_path("assets/music")
 SONGS_DATA_PATH = os.path.join(DATA_FOLDER, "songs_data.json")
 
-SUPPORTED_SONG_TYPES = {".mp3", ".wav"}
-SUPPORTED_ICON_TYPES = {".jpeg", ".png", ".jpg"}
+SUPPORTED_SONG_TYPES = (".mp3", ".wav")
+SUPPORTED_ICON_TYPES = (".jpeg", ".png", ".jpg")
 
 
 def create_song_data(song_name: str):

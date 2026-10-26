@@ -15,6 +15,7 @@ class AudioPlayer:
         self.song_data = None
         self.song = subprocess.Popen[bytes]
         self.audio_stream = None
+        self.current_audio_path: str
 
     def start_audio(self, audio_path: str):
         print("Starting new audio, path:", audio_path)
@@ -23,9 +24,11 @@ class AudioPlayer:
         self.current_audio_thread_event.set()
         if self.audio_stream == None:
             self.initialize_audio(audio_path)
+            self.current_audio_path = audio_path
 
     def reset_audio(self):
         print("Stopping current audio")
+        self.initialize_audio(self.current_audio_path)
 
         # self.current_audio
 
@@ -71,11 +74,11 @@ class AudioPlayer:
         while True:
             event_is_set = self.current_audio_thread_event.is_set()
             if (
-                event_is_set and self.song_data and len(self.song_data) > 0
+                event_is_set
+                and self.song_data
+                and len(self.song_data) > 0
+                and self.audio_stream
+                and self.song_data
             ):  # Audio started
-                print("Yay its set!")
-                if self.audio_stream and self.song_data:
-                    self.audio_stream.write(self.song_data)
-                    self.song_data = self.song.stdout.read(CHUNK)
-            else:  # Audio stopped
-                print("no more set.")
+                self.audio_stream.write(self.song_data)
+                self.song_data = self.song.stdout.read(CHUNK)
