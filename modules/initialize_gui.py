@@ -3,9 +3,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from classes import *
-from song_data_handler import *
-from player_controller import *
+from classes import MainGui
+from song_data_handler import create_song_data, get_song_data
+from player_controller import control_player, reset_player
 
 
 def initialize_gui():

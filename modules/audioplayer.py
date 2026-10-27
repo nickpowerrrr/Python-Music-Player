@@ -8,7 +8,7 @@ CHUNK = 1024
 
 class AudioPlayer:
     def __init__(self) -> None:
-        self.audio_playing = False
+        self.audio_playing :bool = False
         self.current_audio_thread_event: Event = Event()
         self.audio_main_thread = Thread(name="main_thread", target=self.audio_handler)
         self.audio_main_thread.start()
@@ -18,9 +18,6 @@ class AudioPlayer:
         self.current_audio_path: str
 
     def start_audio(self, audio_path: str):
-        print("Starting new audio, path:", audio_path)
-        print(audio_path)
-
         self.current_audio_thread_event.set()
         if self.audio_stream == None:
             self.initialize_audio(audio_path)
@@ -28,9 +25,10 @@ class AudioPlayer:
 
     def reset_audio(self):
         print("Stopping current audio")
+        if self.audio_stream:
+            self.audio_stream.stop_stream()
+            self.audio_stream.close()
         self.initialize_audio(self.current_audio_path)
-
-        # self.current_audio
 
     def pause_audio(self):
         print("pausing current audio")
@@ -38,6 +36,9 @@ class AudioPlayer:
 
     def change_audio(self, new_audio_path: str):
         print("changing audio")
+        if self.audio_stream:
+            self.audio_stream.stop_stream()
+            self.audio_stream.close()
         self.initialize_audio(new_audio_path)
 
     def initialize_audio(self, audio_path: str):
@@ -73,12 +74,10 @@ class AudioPlayer:
     def audio_handler(self):
         while True:
             event_is_set = self.current_audio_thread_event.is_set()
-            if (
-                event_is_set
-                and self.song_data
-                and len(self.song_data) > 0
-                and self.audio_stream
-                and self.song_data
-            ):  # Audio started
-                self.audio_stream.write(self.song_data)
-                self.song_data = self.song.stdout.read(CHUNK)
+            self.audio_playing = event_is_set  and self.song_data != None and len(self.song_data) > 0 and self.audio_stream != None  and self.song_data != None
+            audio_playing = self.audio_playing
+            print(audio_playing)
+            # Audio started
+            if audio_playing:
+               self.audio_stream.write(self.song_data)
+               self.song_data = self.song.stdout.read(CHUNK)

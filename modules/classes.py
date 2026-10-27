@@ -110,7 +110,7 @@ class ImageButton:
         self.selected_image_file = selected_image_file
         self.current_size = 100
 
-    def update(self, main_gui: MainGui):
+    def update(self, main_gui: MainGui, delta_time :float):
 
         is_in_x_range = (main_gui.mouse_position_x > self.min_position_x) and (
             main_gui.mouse_position_x < self.max_position_x
@@ -120,15 +120,15 @@ class ImageButton:
         )
         is_in_range = is_in_x_range and is_in_y_range
         if is_in_range:
-            self.on_enter(main_gui)
+            self.on_enter(main_gui,delta_time)
         elif self.current_size != 100:
-            self.on_leave(main_gui)
+            self.on_leave(main_gui,delta_time)
 
-    def scale_button(self, main_gui: MainGui, target_size: int):
+    def scale_button(self, main_gui: MainGui, target_size: int,delta_time :float):
 
         speed = 10.0
-        alpha = np.clip(main_gui.delta_time * speed, 0.0, 1.0) or min(
-            main_gui.delta_time * speed, 1.0
+        alpha = np.clip(delta_time * speed, 0.0, 1.0) or min(
+            delta_time * speed, 1.0
         )
 
         self.current_size = lerp(self.current_size, target_size, alpha)
@@ -142,11 +142,11 @@ class ImageButton:
         self.selected_image = ImageTk.PhotoImage(resized_file, master=main_gui.root)
         main_gui.canvas.itemconfig(self.button, image=self.selected_image)
 
-    def on_enter(self, main_gui: MainGui):
-        self.scale_button(main_gui, 125)
+    def on_enter(self, main_gui: MainGui, delta_time :float):
+        self.scale_button(main_gui, 125, delta_time)
 
-    def on_leave(self, main_gui: MainGui):
-        self.scale_button(main_gui, 100)
+    def on_leave(self, main_gui: MainGui, delta_time :float):
+        self.scale_button(main_gui, 100, delta_time)
 
 
 class SongDetails(TypedDict):
