@@ -19,6 +19,7 @@ GUI_WIDTH = 750
 GUI_HEIGHT = 500
 
 CONTROL_BUTTON_SIZE = (100, 100)
+COVER_ART_SIZE = (250, 250)
 SKIP_BUTTON_OFFSET = 150
 
 
@@ -41,41 +42,77 @@ class MainGui:
         self.playing = False
         self.mouse_position_x = 0
         self.mouse_position_y = 0
+        self.CONTROL_BUTTON_SIZE = CONTROL_BUTTON_SIZE
+        self.COVER_ART_SIZE = COVER_ART_SIZE
         # Images
-        
+
         # Ui Handler Variables
-        self.current_buttons :list[ImageButton] = []
+        self.current_buttons: list[ImageButton] = []
 
         # --Control button
-        
+
         self.play_image_file = Image.open(
             get_asset_path("assets/images/play_button.png")
         )
         self.play_image = self.play_image_file.resize(CONTROL_BUTTON_SIZE)
         self.play_image = ImageTk.PhotoImage(self.play_image, master=self.root)
-        
+
         self.pause_image_file = Image.open(
             get_asset_path("assets/images/pauze_button.png")
         )
         self.pause_image = self.pause_image_file.resize(CONTROL_BUTTON_SIZE)
         self.pause_image = ImageTk.PhotoImage(self.pause_image, master=self.root)
-        self.control_button = ImageButton(self, self.play_image, self.play_image_file, GUI_WIDTH / 2, GUI_HEIGHT / 2 + 100)
+        self.control_button = ImageButton(
+            self,
+            self.play_image,
+            self.play_image_file,
+            GUI_WIDTH / 2,
+            GUI_HEIGHT / 2 + 100,
+        )
         self.current_buttons.append(self.control_button)
         self.skip_left_image_file = Image.open(
             get_asset_path("assets/images/skip_left.png")
         )
         self.skip_left_image = self.skip_left_image_file.resize(CONTROL_BUTTON_SIZE)
-        self.skip_left_image = ImageTk.PhotoImage(self.skip_left_image, master=self.root)
-        self.skip_left_button = ImageButton(self,self.skip_left_image,self.skip_left_image_file, self.control_button.position_x - SKIP_BUTTON_OFFSET,GUI_HEIGHT / 2 + 100)
+        self.skip_left_image = ImageTk.PhotoImage(
+            self.skip_left_image, master=self.root
+        )
+        self.skip_left_button = ImageButton(
+            self,
+            self.skip_left_image,
+            self.skip_left_image_file,
+            self.control_button.position_x - SKIP_BUTTON_OFFSET,
+            GUI_HEIGHT / 2 + 100,
+        )
         self.current_buttons.append(self.skip_left_button)
         self.skip_right_image_file = Image.open(
-                    get_asset_path("assets/images/skip_right.png")
-                )
+            get_asset_path("assets/images/skip_right.png")
+        )
         self.skip_right_image = self.skip_right_image_file.resize(CONTROL_BUTTON_SIZE)
-        self.skip_right_image = ImageTk.PhotoImage(self.skip_right_image, master=self.root)
-        self.skip_right_button = ImageButton(self,self.skip_right_image,self.skip_right_image_file, self.control_button.position_x + SKIP_BUTTON_OFFSET,GUI_HEIGHT / 2 + 100)
+        self.skip_right_image = ImageTk.PhotoImage(
+            self.skip_right_image, master=self.root
+        )
+        self.skip_right_button = ImageButton(
+            self,
+            self.skip_right_image,
+            self.skip_right_image_file,
+            self.control_button.position_x + SKIP_BUTTON_OFFSET,
+            GUI_HEIGHT / 2 + 100,
+        )
         self.current_buttons.append(self.skip_right_button)
-        
+
+        # Cover Art Image
+        self.cover_art_image_file = Image.open(  # Will probably be replaced later with last song that played before exit, probably..
+            get_asset_path("assets/images/default_icon.png")
+        )
+        self.cover_art_image_file = self.cover_art_image_file.resize(COVER_ART_SIZE)
+        self.cover_art_image_file = ImageTk.PhotoImage(
+            self.cover_art_image_file, master=self.root
+        )
+        self.cover_art_image = self.canvas.create_image(
+            GUI_WIDTH / 2, 150, image=self.cover_art_image_file
+        )
+
         # Audio Player
         self.audio_player = AudioPlayer()
         # Data
@@ -95,8 +132,8 @@ class ImageButton:
         main_gui: MainGui,
         selected_image: ImageTk.PhotoImage,
         selected_image_file: ImageFile.ImageFile,
-        position_x :float,
-        position_y :float
+        position_x: float,
+        position_y: float,
     ):
         self.position_x = position_x
         self.position_y = position_y
@@ -110,7 +147,7 @@ class ImageButton:
         self.selected_image_file = selected_image_file
         self.current_size = 100
 
-    def update(self, main_gui: MainGui, delta_time :float):
+    def update(self, main_gui: MainGui, delta_time: float):
 
         is_in_x_range = (main_gui.mouse_position_x > self.min_position_x) and (
             main_gui.mouse_position_x < self.max_position_x
@@ -120,16 +157,14 @@ class ImageButton:
         )
         is_in_range = is_in_x_range and is_in_y_range
         if is_in_range:
-            self.on_enter(main_gui,delta_time)
+            self.on_enter(main_gui, delta_time)
         elif self.current_size != 100:
-            self.on_leave(main_gui,delta_time)
+            self.on_leave(main_gui, delta_time)
 
-    def scale_button(self, main_gui: MainGui, target_size: int,delta_time :float):
+    def scale_button(self, main_gui: MainGui, target_size: int, delta_time: float):
 
         speed = 10.0
-        alpha = np.clip(delta_time * speed, 0.0, 1.0) or min(
-            delta_time * speed, 1.0
-        )
+        alpha = np.clip(delta_time * speed, 0.0, 1.0) or min(delta_time * speed, 1.0)
 
         self.current_size = lerp(self.current_size, target_size, alpha)
 
@@ -142,10 +177,10 @@ class ImageButton:
         self.selected_image = ImageTk.PhotoImage(resized_file, master=main_gui.root)
         main_gui.canvas.itemconfig(self.button, image=self.selected_image)
 
-    def on_enter(self, main_gui: MainGui, delta_time :float):
+    def on_enter(self, main_gui: MainGui, delta_time: float):
         self.scale_button(main_gui, 125, delta_time)
 
-    def on_leave(self, main_gui: MainGui, delta_time :float):
+    def on_leave(self, main_gui: MainGui, delta_time: float):
         self.scale_button(main_gui, 100, delta_time)
 
 
@@ -153,6 +188,5 @@ class SongDetails(TypedDict):
     song_file_path: str
     song_icon_path: str
 
+
 SongInfo = dict[str, SongDetails]
-       
-   

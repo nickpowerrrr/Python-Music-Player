@@ -8,17 +8,23 @@ from get_asset_path import get_asset_path
 
 def start_player(self: MainGui):
     if self.current_song:
-       current_song :SongInfo = self.current_song
-       song_details =  next(iter(current_song.values()))
-       self.playing = True
-       # Audio
-       self.audio_player.start_audio(get_asset_path(song_details["song_file_path"]))
-       # Visual
-       self.control_button.selected_image_file = self.pause_image_file
-   
+        current_song: SongInfo = self.current_song
+        song_details = next(iter(current_song.values()))
+        self.playing = True
+        # Audio
+        self.audio_player.start_audio(get_asset_path(song_details["song_file_path"]))
+        # Visual
+        self.control_button.selected_image_file = self.pause_image_file
+      
+        new_cover_image = Image.open(get_asset_path(song_details["song_icon_path"]))
+        resized_image = new_cover_image.resize(self.COVER_ART_SIZE)
     
-    
-    
+      
+        self.cover_art_image_file = ImageTk.PhotoImage(resized_image, master=self.root)
+  
+  
+
+        self.canvas.itemconfig(self.cover_art_image, image=self.cover_art_image_file)
 
 
 def reset_player(self: MainGui):

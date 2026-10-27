@@ -26,7 +26,7 @@ class AudioPlayer:
 
     def reset_audio(self):
         if hasattr(self, "song") and self.song:
-            self.song.terminate()
+            self.song.terminate() # type: ignore
 
         if self.song.stdout:
             self.song_data = self.song.stdout.read(CHUNK)
