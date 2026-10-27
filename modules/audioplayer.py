@@ -16,7 +16,7 @@ class AudioPlayer:
         self.song = subprocess.Popen[bytes]
         self.audio_stream = None
         self.current_audio_path: str
-        self.can_play :bool = False
+        self.can_play: bool = False
 
     def start_audio(self, audio_path: str):
         self.current_audio_thread_event.set()
@@ -25,14 +25,14 @@ class AudioPlayer:
             self.current_audio_path = audio_path
 
     def reset_audio(self):
-        if hasattr(self, 'song') and self.song:
-           self.song.terminate()
-           
+        if hasattr(self, "song") and self.song:
+            self.song.terminate()
+
         if self.song.stdout:
-           self.song_data = self.song.stdout.read(CHUNK)
+            self.song_data = self.song.stdout.read(CHUNK)
         else:
-           self.song_data = b""
-        
+            self.song_data = b""
+
         self.initialize_audio(self.current_audio_path)
 
     def pause_audio(self):
@@ -45,7 +45,7 @@ class AudioPlayer:
             self.audio_stream.stop_stream()
             self.audio_stream.close()
             self.audio_stream = None
-            self.song.terminate() # type: ignore
+            self.song.terminate()  # type: ignore
         self.initialize_audio(new_audio_path)
 
     def initialize_audio(self, audio_path: str):
@@ -74,21 +74,18 @@ class AudioPlayer:
             rate=44100,  # use ffprobe to get this from the file beforehand
             output=True,
         )
-        self.song_data = self.song.stdout.read(CHUNK)
+        self.song_data = self.song.stdout.read(CHUNK)  # type: ignore
 
     def audio_handler(self):
-        while True:
-            event_is_set = self.current_audio_thread_event.is_set()
-            print(event_is_set)
-            if event_is_set:
-               self.can_play = (
-                   self.song_data is not None
-                   and self.song.stdout is not None
-                   and len(self.song_data) > 0
-                   and self.audio_stream is not None
-                   and not self.audio_stream.is_stopped()
-                  )
-               # Audio started
-               if self.can_play:
-                   self.audio_stream.write(self.song_data)
-                   self.song_data = self.song.stdout.read(CHUNK)
+        while self.current_audio_thread_event.is_set(): # event is set is basically the the play button
+            can_play = (
+                self.song_data is not None
+                and self.song.stdout is not None
+                and len(self.song_data) > 0
+                and self.audio_stream is not None
+                and not self.audio_stream.is_stopped()
+            )
+            # Audio started
+            if can_play:
+                self.audio_stream.write(self.song_data)
+                self.song_data = self.song.stdout.read(CHUNK)
