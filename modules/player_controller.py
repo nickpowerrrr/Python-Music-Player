@@ -15,14 +15,11 @@ def start_player(self: MainGui):
         self.audio_player.start_audio(get_asset_path(song_details["song_file_path"]))
         # Visual
         self.control_button.selected_image_file = self.pause_image_file
-      
+
         new_cover_image = Image.open(get_asset_path(song_details["song_icon_path"]))
         resized_image = new_cover_image.resize(self.COVER_ART_SIZE)
-    
-      
+
         self.cover_art_image_file = ImageTk.PhotoImage(resized_image, master=self.root)
-  
-  
 
         self.canvas.itemconfig(self.cover_art_image, image=self.cover_art_image_file)
 

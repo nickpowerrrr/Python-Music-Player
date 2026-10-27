@@ -1,4 +1,5 @@
 import subprocess
+import time
 from threading import Event, Thread
 
 import pyaudio
@@ -26,8 +27,7 @@ class AudioPlayer:
 
     def reset_audio(self):
         if hasattr(self, "song") and self.song:
-            self.song.terminate() # type: ignore
-
+            self.song.terminate()  # type: ignore
         if self.song.stdout:
             self.song_data = self.song.stdout.read(CHUNK)
         else:
@@ -36,11 +36,9 @@ class AudioPlayer:
         self.initialize_audio(self.current_audio_path)
 
     def pause_audio(self):
-        print("pausing current audio")
         self.current_audio_thread_event.clear()
 
     def change_audio(self, new_audio_path: str):
-        print("changing audio")
         if self.audio_stream:
             self.audio_stream.stop_stream()
             self.audio_stream.close()
@@ -77,7 +75,9 @@ class AudioPlayer:
         self.song_data = self.song.stdout.read(CHUNK)  # type: ignore
 
     def audio_handler(self):
-        while self.current_audio_thread_event.is_set(): # event is set is basically the the play button
+        while True:
+            self.current_audio_thread_event.wait()
+            # event is set is basically the the play button
             can_play = (
                 self.song_data is not None
                 and self.song.stdout is not None
@@ -87,5 +87,8 @@ class AudioPlayer:
             )
             # Audio started
             if can_play:
+                print("playing!")
                 self.audio_stream.write(self.song_data)
                 self.song_data = self.song.stdout.read(CHUNK)
+            else:
+                time.sleep(0.01)

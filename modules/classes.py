@@ -100,7 +100,6 @@ class MainGui:
             GUI_HEIGHT / 2 + 100,
         )
         self.current_buttons.append(self.skip_right_button)
-
         # Cover Art Image
         self.cover_art_image_file = Image.open(  # Will probably be replaced later with last song that played before exit, probably..
             get_asset_path("assets/images/default_icon.png")
@@ -109,7 +108,7 @@ class MainGui:
         self.cover_art_image_file = ImageTk.PhotoImage(
             self.cover_art_image_file, master=self.root
         )
-        self.cover_art_image = self.canvas.create_image(
+        self.cover_art_image = self.canvas.create_image( # type: ignore
             GUI_WIDTH / 2, 150, image=self.cover_art_image_file
         )
 
