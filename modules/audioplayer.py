@@ -87,7 +87,6 @@ class AudioPlayer:
             )
             # Audio started
             if can_play:
-                print("playing!")
                 self.audio_stream.write(self.song_data)
                 self.song_data = self.song.stdout.read(CHUNK)
             else:

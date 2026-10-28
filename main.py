@@ -4,7 +4,7 @@ from modules.classes import MainGui
 from modules.initialize_gui import initialize_gui
 from modules.ui_handler import update_ui
 
-MAIN_GUI :MainGui = initialize_gui()
+MAIN_GUI: MainGui = initialize_gui()
 
 # Variables
 
@@ -21,6 +21,7 @@ def update():
     MAIN_GUI.delta_time = delta_time
     update_ui(MAIN_GUI)
     MAIN_GUI.root.after(16, update)  # 60 fps
+
 
 update()
 MAIN_GUI.root.mainloop()
